@@ -116,14 +116,14 @@ export default function CarruselForm({ marcas }: Props) {
         <StepIndicator current={1} />
 
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">Selecciona la marca</h2>
-          <p className="text-sm text-gray-500">
+          <h2 className="text-lg font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>Selecciona la marca</h2>
+          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
             La guía de marca se carga automáticamente para guiar la generación.
           </p>
         </div>
 
         {marcas.length === 0 ? (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-700">
+          <div className="px-4 py-3 rounded-2xl text-sm" style={{ background: 'rgba(253,216,122,0.25)', color: 'rgba(130,95,30,0.85)', border: '1px solid rgba(253,216,122,0.45)' }}>
             No hay marcas registradas. <a href="/marcas/nueva" className="font-medium underline">Crear una marca</a> primero.
           </div>
         ) : (
@@ -133,30 +133,33 @@ export default function CarruselForm({ marcas }: Props) {
                 key={marca.id}
                 type="button"
                 onClick={() => { setValue('marca_id', marca.id); setStep(2) }}
-                className={`text-left p-4 rounded-xl border-2 transition-all ${
-                  marcaId === marca.id
-                    ? 'border-indigo-500 bg-indigo-50'
-                    : 'border-gray-200 hover:border-indigo-300 bg-white'
-                }`}
+                className="card-glow card-glow-hover text-left p-4"
+                style={marcaId === marca.id ? {
+                  background: 'linear-gradient(135deg, rgba(253,216,122,0.30) 0%, rgba(184,168,212,0.25) 100%)',
+                  border: '1.5px solid rgba(184,168,212,0.55)',
+                } : {}}
               >
                 <div className="flex items-center gap-3 mb-2">
                   <div
-                    className="w-7 h-7 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: marca.colores?.primario ?? '#6366f1' }}
+                    className="w-7 h-7 rounded-xl flex-shrink-0"
+                    style={{
+                      backgroundColor: marca.colores?.primario ?? '#6366f1',
+                      boxShadow: `0 2px 8px ${marca.colores?.primario ?? '#6366f1'}55`,
+                    }}
                   />
-                  <span className="font-medium text-gray-900 text-sm">{marca.nombre}</span>
+                  <span className="font-medium text-sm" style={{ color: 'var(--text-primary)' }}>{marca.nombre}</span>
                 </div>
                 <div className="flex gap-1.5 flex-wrap">
                   {Object.values(marca.colores ?? {}).map((hex, i) => (
                     <div
                       key={i}
-                      className="w-4 h-4 rounded-full border border-gray-200"
-                      style={{ backgroundColor: hex as string }}
+                      className="w-4 h-4 rounded-full"
+                      style={{ backgroundColor: hex as string, border: '1.5px solid rgba(255,255,255,0.60)' }}
                     />
                   ))}
                 </div>
                 {marca.tono_visual && (
-                  <p className="text-xs text-gray-400 mt-2 line-clamp-1">{marca.tono_visual}</p>
+                  <p className="text-xs mt-2 line-clamp-1" style={{ color: 'var(--text-muted)' }}>{marca.tono_visual}</p>
                 )}
               </button>
             ))}
@@ -164,7 +167,7 @@ export default function CarruselForm({ marcas }: Props) {
         )}
 
         {errors.marca_id && (
-          <p className="text-xs text-red-500">{errors.marca_id.message}</p>
+          <p className="text-xs" style={{ color: 'rgba(180,60,60,0.80)' }}>{errors.marca_id.message}</p>
         )}
       </div>
     )
@@ -177,11 +180,11 @@ export default function CarruselForm({ marcas }: Props) {
         <StepIndicator current={2} />
 
         <div>
-          <button type="button" onClick={() => setStep(1)} className="text-xs text-gray-400 hover:text-gray-600 mb-3">
+          <button type="button" onClick={() => setStep(1)} className="text-xs mb-3 block" style={{ color: 'var(--text-muted)' }}>
             ← {marcaSeleccionada?.nombre}
           </button>
-          <h2 className="text-lg font-semibold text-gray-900 mb-1">Enfoque del carrusel</h2>
-          <p className="text-sm text-gray-500">Define el propósito del contenido.</p>
+          <h2 className="text-lg font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>Enfoque del carrusel</h2>
+          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Define el propósito del contenido.</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -190,20 +193,20 @@ export default function CarruselForm({ marcas }: Props) {
               key={e.value}
               type="button"
               onClick={() => { setValue('enfoque', e.value); setStep(3) }}
-              className={`text-left p-4 rounded-xl border-2 transition-all ${
-                enfoque === e.value
-                  ? 'border-indigo-500 bg-indigo-50'
-                  : 'border-gray-200 hover:border-indigo-300 bg-white'
-              }`}
+              className="card-glow card-glow-hover text-left p-4"
+              style={enfoque === e.value ? {
+                background: 'linear-gradient(135deg, rgba(253,216,122,0.30) 0%, rgba(184,168,212,0.25) 100%)',
+                border: '1.5px solid rgba(184,168,212,0.55)',
+              } : {}}
             >
-              <p className="font-medium text-gray-900 text-sm">{e.label}</p>
-              <p className="text-xs text-gray-500 mt-0.5">{e.desc}</p>
+              <p className="font-medium text-sm" style={{ color: 'var(--text-primary)' }}>{e.label}</p>
+              <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{e.desc}</p>
             </button>
           ))}
         </div>
 
         {errors.enfoque && (
-          <p className="text-xs text-red-500">{errors.enfoque.message}</p>
+          <p className="text-xs" style={{ color: 'rgba(180,60,60,0.80)' }}>{errors.enfoque.message}</p>
         )}
       </div>
     )
@@ -216,23 +219,24 @@ export default function CarruselForm({ marcas }: Props) {
         <StepIndicator current={3} />
 
         <div>
-          <button type="button" onClick={() => setStep(2)} className="text-xs text-gray-400 hover:text-gray-600 mb-3">
+          <button type="button" onClick={() => setStep(2)} className="text-xs mb-3 block" style={{ color: 'var(--text-muted)' }}>
             ← {enfoque && ENFOQUES.find(e => e.value === enfoque)?.label}
           </button>
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-1">Contenido de slides</h2>
-              <p className="text-sm text-gray-500">
+              <h2 className="text-lg font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>Contenido de slides</h2>
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
                 Escribe el copy de cada slide. La IA genera la composición visual automáticamente.
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500">{fields.length}/7 slides</span>
+              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{fields.length}/7 slides</span>
               {fields.length < 7 && (
                 <button
                   type="button"
                   onClick={() => append(SLIDE_INICIAL)}
-                  className="text-xs text-indigo-600 font-medium hover:underline"
+                  className="text-xs font-medium"
+                  style={{ color: 'rgba(130,80,180,0.80)' }}
                 >
                   + Agregar slide
                 </button>
@@ -254,46 +258,57 @@ export default function CarruselForm({ marcas }: Props) {
         </div>
 
         {errors.slides?.root && (
-          <p className="text-xs text-red-500">{errors.slides.root.message}</p>
+          <p className="text-xs" style={{ color: 'rgba(180,60,60,0.80)' }}>{errors.slides.root.message}</p>
         )}
 
         {/* Imagen de referencia */}
-        <div className="border border-gray-200 rounded-xl p-4 bg-white">
-          <p className="text-sm font-medium text-gray-800 mb-1">Imagen de referencia <span className="text-gray-400 font-normal">(opcional)</span></p>
-          <p className="text-xs text-gray-500 mb-3">Adjunta una foto de la persona o el logo del cliente para que la IA lo use en las piezas.</p>
+        <div className="card-glow p-4">
+          <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>
+            Imagen de referencia <span className="font-normal" style={{ color: 'var(--text-muted)' }}>(opcional)</span>
+          </p>
+          <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>Adjunta una foto de la persona o el logo del cliente para que la IA lo use en las piezas.</p>
 
           {imagenPreview ? (
             <div className="flex items-center gap-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={imagenPreview}
                 alt="Referencia"
-                className="w-16 h-16 rounded-lg object-cover border border-gray-200 flex-shrink-0"
+                className="w-16 h-16 rounded-2xl object-cover flex-shrink-0"
+                style={{ border: '1px solid rgba(180,210,240,0.42)' }}
               />
               <div className="flex-1 min-w-0">
                 {uploadingImg ? (
-                  <p className="text-xs text-indigo-600 flex items-center gap-1.5">
-                    <span className="animate-spin inline-block w-3 h-3 border-2 border-indigo-600 border-t-transparent rounded-full" />
+                  <p className="text-xs flex items-center gap-1.5" style={{ color: 'rgba(130,80,180,0.80)' }}>
+                    <span className="animate-spin inline-block w-3 h-3 border-2 border-t-transparent rounded-full" style={{ borderColor: 'rgba(130,80,180,0.70)', borderTopColor: 'transparent' }} />
                     Subiendo imagen…
                   </p>
                 ) : imagenUrl ? (
-                  <p className="text-xs text-green-600 font-medium">✓ Imagen cargada correctamente</p>
+                  <p className="text-xs font-medium" style={{ color: 'rgba(30,100,65,0.80)' }}>✓ Imagen cargada correctamente</p>
                 ) : null}
-                {uploadError && <p className="text-xs text-red-500 mt-1">{uploadError}</p>}
+                {uploadError && <p className="text-xs mt-1" style={{ color: 'rgba(180,60,60,0.80)' }}>{uploadError}</p>}
               </div>
               <button
                 type="button"
                 onClick={() => { setImagenPreview(null); setImagenUrl(null); setValue('imagen_referencia', null) }}
-                className="text-xs text-gray-400 hover:text-red-500 flex-shrink-0"
+                className="text-xs flex-shrink-0"
+                style={{ color: 'var(--text-muted)' }}
               >
                 Quitar
               </button>
             </div>
           ) : (
-            <label className={`flex items-center justify-center gap-2 border-2 border-dashed rounded-lg p-4 cursor-pointer transition-colors ${uploadingImg ? 'border-indigo-300 bg-indigo-50' : 'border-gray-300 hover:border-indigo-400 hover:bg-indigo-50'}`}>
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+            <label
+              className="flex items-center justify-center gap-2 p-4 cursor-pointer rounded-2xl transition-all"
+              style={{
+                border: `2px dashed ${uploadingImg ? 'rgba(184,168,212,0.60)' : 'rgba(180,210,240,0.50)'}`,
+                background: uploadingImg ? 'rgba(184,168,212,0.10)' : 'rgba(255,255,255,0.25)',
+              }}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" style={{ color: 'var(--text-muted)' }}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
               </svg>
-              <span className="text-sm text-gray-500">Subir foto o logo</span>
+              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Subir foto o logo</span>
               <input
                 type="file"
                 accept="image/*"
@@ -308,28 +323,29 @@ export default function CarruselForm({ marcas }: Props) {
         </div>
 
         {/* Resumen */}
-        <div className="bg-gray-50 rounded-xl p-4 text-sm border border-gray-200">
-          <p className="font-medium text-gray-700 mb-1">Resumen</p>
-          <div className="flex flex-wrap gap-4 text-xs text-gray-500">
-            <span>Marca: <strong className="text-gray-900">{marcaSeleccionada?.nombre}</strong></span>
-            <span>Enfoque: <strong className="text-gray-900 capitalize">{enfoque}</strong></span>
-            <span>Slides: <strong className="text-gray-900">{fields.length}</strong></span>
-            {imagenUrl && <span>Imagen: <strong className="text-green-700">✓ adjunta</strong></span>}
+        <div className="card-glow p-4">
+          <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Resumen</p>
+          <div className="flex flex-wrap gap-4 text-xs" style={{ color: 'var(--text-muted)' }}>
+            <span>Marca: <strong style={{ color: 'var(--text-primary)' }}>{marcaSeleccionada?.nombre}</strong></span>
+            <span>Enfoque: <strong className="capitalize" style={{ color: 'var(--text-primary)' }}>{enfoque}</strong></span>
+            <span>Slides: <strong style={{ color: 'var(--text-primary)' }}>{fields.length}</strong></span>
+            {imagenUrl && <span>Imagen: <strong style={{ color: 'rgba(30,100,65,0.80)' }}>✓ adjunta</strong></span>}
           </div>
         </div>
 
         {serverError && (
-          <p className="text-sm text-red-600 bg-red-50 px-4 py-3 rounded-lg">{serverError}</p>
+          <p className="text-sm px-4 py-3 rounded-2xl" style={{ color: 'rgba(160,50,50,0.85)', background: 'rgba(255,200,200,0.30)', border: '1px solid rgba(255,180,180,0.40)' }}>{serverError}</p>
         )}
 
         <button
           type="submit"
           disabled={generating}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-semibold py-3 px-6 rounded-xl transition-colors flex items-center justify-center gap-2"
+          className="btn-primary w-full flex items-center justify-center gap-2 py-3"
+          style={generating ? { opacity: 0.7 } : {}}
         >
           {generating ? (
             <>
-              <span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+              <span className="animate-spin inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full" />
               Guardando carrusel...
             </>
           ) : (
@@ -351,22 +367,27 @@ function StepIndicator({ current }: { current: 1 | 2 | 3 }) {
         const active = num === current
         return (
           <div key={label} className="flex items-center gap-2">
-            <div className={`flex items-center gap-1.5`}>
+            <div className="flex items-center gap-1.5">
               <span
-                className={`w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center flex-shrink-0 ${
-                  done   ? 'bg-indigo-600 text-white' :
-                  active ? 'bg-indigo-100 text-indigo-700 ring-2 ring-indigo-500' :
-                           'bg-gray-100 text-gray-400'
-                }`}
+                className="w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center flex-shrink-0"
+                style={done
+                  ? { background: 'linear-gradient(135deg, var(--glow-core), var(--lavender))', color: 'rgba(75,45,110,0.95)' }
+                  : active
+                    ? { background: 'rgba(184,168,212,0.30)', color: 'rgba(90,55,120,0.90)', border: '2px solid rgba(184,168,212,0.70)' }
+                    : { background: 'rgba(255,255,255,0.40)', color: 'var(--text-muted)', border: '1px solid rgba(180,210,240,0.35)' }
+                }
               >
                 {done ? '✓' : num}
               </span>
-              <span className={`text-xs font-medium ${active ? 'text-indigo-700' : done ? 'text-gray-600' : 'text-gray-400'}`}>
+              <span
+                className="text-xs font-medium"
+                style={{ color: active ? 'rgba(90,55,120,0.90)' : done ? 'var(--text-secondary)' : 'var(--text-muted)' }}
+              >
                 {label}
               </span>
             </div>
             {i < steps.length - 1 && (
-              <span className="text-gray-300 text-xs mx-1">→</span>
+              <span className="text-xs mx-1" style={{ color: 'var(--text-muted)' }}>→</span>
             )}
           </div>
         )
