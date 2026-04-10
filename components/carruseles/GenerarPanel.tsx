@@ -113,13 +113,13 @@ export default function GenerarPanel({ carruselId, totalSlides, yaGenerado }: Pr
   }
 
   return (
-    <div className="card-glow p-5" style={{ background: 'linear-gradient(135deg, rgba(253,216,122,0.22) 0%, rgba(240,238,248,0.65) 50%, rgba(184,168,212,0.20) 100%)' }}>
+    <div className="card-glow p-5">
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <h3 className="text-sm font-medium" style={{ color: 'rgba(90,55,120,0.90)' }}>
+          <h3 className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
             {yaGenerado ? 'Regenerar composiciones' : 'Generar composiciones con IA'}
           </h3>
-          <p className="text-xs mt-1" style={{ color: 'rgba(90,55,120,0.65)' }}>
+          <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
             {yaGenerado
               ? 'La IA rediseñará todos los slides usando la guía de marca.'
               : `La IA diseñará la composición de los ${totalSlides} slides respetando colores y tipografía de la marca.`}
@@ -128,20 +128,20 @@ export default function GenerarPanel({ carruselId, totalSlides, yaGenerado }: Pr
           {loading && (
             <div className="mt-3 space-y-1.5">
               <div className="flex items-center gap-2">
-                <span className="animate-spin inline-block w-3 h-3 border-2 border-t-transparent rounded-full flex-shrink-0" style={{ borderColor: 'rgba(130,80,180,0.70)', borderTopColor: 'transparent' }} />
-                <p className="text-xs font-medium truncate" style={{ color: 'rgba(90,55,120,0.80)' }}>{progreso}</p>
+                <span className="animate-spin inline-block w-3 h-3 border-2 border-t-transparent rounded-full flex-shrink-0" style={{ borderColor: 'var(--salmon-accent)', borderTopColor: 'transparent' }} />
+                <p className="text-xs font-medium truncate" style={{ color: 'var(--text-secondary)' }}>{progreso}</p>
               </div>
-              <div className="w-full rounded-full h-1.5" style={{ background: 'rgba(184,168,212,0.25)' }}>
+              <div className="w-full rounded-full h-1.5" style={{ background: 'rgba(217,96,64,0.12)' }}>
                 <div
                   className="h-1.5 rounded-full transition-all duration-300"
-                  style={{ width: `${avance}%`, background: 'linear-gradient(90deg, var(--glow-core), var(--lavender))' }}
+                  style={{ width: `${avance}%`, background: 'linear-gradient(90deg, var(--salmon-strong), var(--salmon-accent))' }}
                 />
               </div>
             </div>
           )}
 
           {error && (
-            <p className="text-xs px-3 py-2 rounded-2xl mt-2" style={{ color: 'rgba(160,50,50,0.85)', background: 'rgba(255,200,200,0.30)', border: '1px solid rgba(255,180,180,0.40)' }}>{error}</p>
+            <p className="text-xs px-3 py-2 mt-2" style={{ color: '#C05030', background: 'rgba(217,96,64,0.08)', border: '1px solid rgba(217,96,64,0.18)', borderRadius: '10px' }}>{error}</p>
           )}
         </div>
 

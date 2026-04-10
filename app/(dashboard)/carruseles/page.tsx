@@ -7,10 +7,10 @@ import type { EstadoCarrusel } from '@/types'
 export const metadata: Metadata = { title: 'Carruseles — Carrusel IA' }
 
 const estadoLabel: Record<EstadoCarrusel, { label: string; style: React.CSSProperties }> = {
-  borrador:    { label: 'Borrador',    style: { background: 'rgba(184,168,212,0.25)', color: 'rgba(90,60,130,0.80)',  border: '1px solid rgba(184,168,212,0.35)' } },
-  en_revision: { label: 'En revisión', style: { background: 'rgba(253,216,122,0.30)', color: 'rgba(130,95,30,0.85)',  border: '1px solid rgba(253,216,122,0.45)' } },
-  aprobado:    { label: 'Aprobado',    style: { background: 'rgba(168,216,196,0.30)', color: 'rgba(30,100,65,0.80)',  border: '1px solid rgba(168,216,196,0.45)' } },
-  con_cambios: { label: 'Con cambios', style: { background: 'rgba(255,180,150,0.30)', color: 'rgba(150,60,40,0.85)', border: '1px solid rgba(255,180,150,0.45)' } },
+  borrador:    { label: 'Borrador',    style: { background: 'rgba(240,240,240,0.80)', color: '#888888', border: '1px solid #E8E8E8' } },
+  en_revision: { label: 'En revisión', style: { background: 'rgba(253,240,235,0.85)', color: '#C05030', border: '1px solid rgba(237,160,128,0.40)' } },
+  aprobado:    { label: 'Aprobado',    style: { background: 'rgba(220,242,228,0.85)', color: '#2E7D4E', border: '1px solid rgba(120,200,150,0.40)' } },
+  con_cambios: { label: 'Con cambios', style: { background: 'rgba(253,240,235,0.85)', color: '#A03820', border: '1px solid rgba(217,96,64,0.35)' } },
 }
 
 interface SlideResumen { numero: number; url_jpg: string | null }
