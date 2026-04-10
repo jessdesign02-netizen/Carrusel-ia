@@ -1,6 +1,11 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import type { Metadata } from 'next'
 import MarcaForm from '@/components/marcas/MarcaForm'
+
+export const metadata: Metadata = {
+  title: 'Nueva marca — Carrusel IA',
+}
 
 export default async function NuevaMarcaPage() {
   const supabase = await createClient()

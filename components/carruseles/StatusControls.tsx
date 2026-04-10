@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { actualizarEstadoCarrusel, guardarVersionCarrusel } from '@/app/(dashboard)/carruseles/actions'
+import { useToast } from '@/components/ui/ToastProvider'
 import type { EstadoCarrusel, RolUsuario } from '@/types'
 
 interface Props {
@@ -12,8 +13,16 @@ interface Props {
   tieneSlidesGenerados: boolean
 }
 
+const ESTADO_LABELS: Record<EstadoCarrusel, string> = {
+  borrador:    'Borrador',
+  en_revision: 'En revisión',
+  aprobado:    'Aprobado',
+  con_cambios: 'Con cambios',
+}
+
 export default function StatusControls({ carruselId, estado, rol, tieneSlidesGenerados }: Props) {
-  const router  = useRouter()
+  const router     = useRouter()
+  const { addToast } = useToast()
   const [loading, setLoading]   = useState(false)
   const [error,   setError]     = useState<string | null>(null)
 
@@ -32,10 +41,12 @@ export default function StatusControls({ carruselId, estado, rol, tieneSlidesGen
     const result = await actualizarEstadoCarrusel(carruselId, nuevoEstado, feedback)
     if (result?.error) {
       setError(result.error)
+      addToast(result.error, 'error')
       setLoading(false)
       return
     }
 
+    addToast(`Estado actualizado → ${ESTADO_LABELS[nuevoEstado]}`)
     router.refresh()
     setLoading(false)
   }

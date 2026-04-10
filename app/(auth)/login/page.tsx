@@ -25,7 +25,7 @@ export default function LoginPage() {
       return
     }
 
-    router.push('/marcas')
+    router.push('/dashboard')
     router.refresh()
   }
 

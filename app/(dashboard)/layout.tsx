@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import LogoutButton from '@/components/ui/LogoutButton'
+import NavLinks from '@/components/ui/NavLinks'
+import ToastProvider from '@/components/ui/ToastProvider'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -17,6 +19,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     .single()
 
   return (
+    <ToastProvider>
     <div className="min-h-screen flex">
       {/* Sidebar */}
       <aside className="w-56 bg-white border-r border-gray-200 flex flex-col">
@@ -24,28 +27,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <h1 className="text-base font-bold text-gray-900">Carrusel IA</h1>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1">
-          <a
-            href="/marcas"
-            className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
-          >
-            Marcas
-          </a>
-          <a
-            href="/carruseles"
-            className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
-          >
-            Carruseles
-          </a>
-          {profile?.rol === 'editor' && (
-            <a
-              href="/carruseles/nuevo"
-              className="flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg text-indigo-600 hover:bg-indigo-50 transition-colors"
-            >
-              + Nuevo carrusel
-            </a>
-          )}
-        </nav>
+        <NavLinks rol={profile?.rol ?? 'editor'} />
 
         <div className="p-4 border-t border-gray-200">
           <div className="flex items-center justify-between">
@@ -65,5 +47,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <div className="max-w-6xl mx-auto px-6 py-8">{children}</div>
       </main>
     </div>
+    </ToastProvider>
   )
 }

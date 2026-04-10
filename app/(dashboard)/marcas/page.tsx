@@ -1,5 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
+import type { Metadata } from 'next'
 import type { Marca } from '@/types'
+
+export const metadata: Metadata = {
+  title: 'Marcas — Carrusel IA',
+}
 
 export default async function MarcasPage() {
   const supabase = await createClient()
@@ -30,13 +35,20 @@ export default async function MarcasPage() {
       )}
 
       {!error && (!marcas || marcas.length === 0) && (
-        <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-          <p className="text-gray-500 text-sm">No hay marcas registradas todavía.</p>
+        <div className="text-center py-20 bg-white rounded-xl border border-gray-200">
+          <svg className="mx-auto mb-4 w-14 h-14 text-indigo-100" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 48 48">
+            <rect x="8" y="12" width="32" height="28" rx="4" stroke="currentColor" strokeWidth="2" fill="none"/>
+            <circle cx="24" cy="22" r="5" stroke="currentColor" strokeWidth="2" fill="none"/>
+            <path d="M14 36c1.5-4 5.5-6 10-6s8.5 2 10 6" strokeLinecap="round" stroke="currentColor" strokeWidth="2"/>
+            <path d="M18 8h12" strokeLinecap="round" stroke="currentColor" strokeWidth="2"/>
+          </svg>
+          <p className="text-gray-600 font-medium">Todavía no hay marcas</p>
+          <p className="text-gray-400 text-sm mt-1 mb-4">Crea la guía de marca y sube sus assets para empezar a generar carruseles.</p>
           <a
             href="/marcas/nueva"
-            className="mt-3 inline-block text-indigo-600 text-sm font-medium hover:underline"
+            className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors"
           >
-            Crear la primera marca
+            + Crear primera marca
           </a>
         </div>
       )}

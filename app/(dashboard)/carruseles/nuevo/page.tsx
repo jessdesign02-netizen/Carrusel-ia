@@ -1,7 +1,12 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import type { Metadata } from 'next'
 import CarruselForm from '@/components/carruseles/CarruselForm'
 import type { Marca } from '@/types'
+
+export const metadata: Metadata = {
+  title: 'Nuevo carrusel — Carrusel IA',
+}
 
 export default async function NuevoCarruselPage() {
   const supabase = await createClient()

@@ -1,5 +1,6 @@
 import { notFound, redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import type { Metadata } from 'next'
 import GenerarPanel from '@/components/carruseles/GenerarPanel'
 import StatusControls from '@/components/carruseles/StatusControls'
 import FeedbackSlide from '@/components/carruseles/FeedbackSlide'
@@ -8,10 +9,28 @@ import ExportarTodos from '@/components/carruseles/ExportarTodos'
 import DownloadPanel from '@/components/carruseles/DownloadPanel'
 import SlideCapture from '@/components/slides/SlideCapture'
 import SlideRenderer from '@/components/slides/SlideRenderer'
+import SlideEditor from '@/components/slides/SlideEditor'
+import EliminarCarrusel from '@/components/carruseles/EliminarCarrusel'
+import DuplicarCarrusel from '@/components/carruseles/DuplicarCarrusel'
+import PromptAccordion from '@/components/slides/PromptAccordion'
+import NotasCarrusel from '@/components/carruseles/NotasCarrusel'
 import type { Carrusel, Slide, Marca, EstadoCarrusel, RolUsuario, ComposicionSlide } from '@/types'
 
 interface Props {
   params: Promise<{ id: string }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('carruseles')
+    .select('enfoque, marca:marcas(nombre)')
+    .eq('id', id)
+    .single()
+  if (!data) return { title: 'Carrusel — Carrusel IA' }
+  const marca = (data.marca as unknown as { nombre: string } | null)?.nombre ?? 'Sin marca'
+  return { title: `${marca} · ${data.enfoque} — Carrusel IA` }
 }
 
 const ESTADO_CONFIG: Record<EstadoCarrusel, { label: string; color: string }> = {
@@ -50,6 +69,7 @@ export default async function CarruselDetallePage({ params }: Props) {
   const estado        = ESTADO_CONFIG[c.estado]
   const yaGenerado    = s.some((slide) => slide.composicion !== null)
   const todosExport   = s.every((slide) => slide.url_jpg !== null)
+  const puedeEditar   = isEditor && (c.estado === 'borrador' || c.estado === 'con_cambios')
 
   return (
     <div className="max-w-5xl space-y-6">
@@ -69,9 +89,13 @@ export default async function CarruselDetallePage({ params }: Props) {
             {todosExport && <span className="ml-2 text-green-600 font-medium">· JPGs listos</span>}
           </p>
         </div>
-        <a href="/carruseles" className="text-sm text-gray-500 hover:text-gray-700 px-3 py-1.5 border border-gray-200 rounded-lg">
-          ← Volver
-        </a>
+        <div className="flex items-center gap-3">
+          {isEditor && <DuplicarCarrusel carruselId={id} />}
+          {isEditor && <EliminarCarrusel carruselId={id} estado={c.estado} />}
+          <a href="/carruseles" className="text-sm text-gray-500 hover:text-gray-700 px-3 py-1.5 border border-gray-200 rounded-lg">
+            ← Volver
+          </a>
+        </div>
       </div>
 
       {/* ── Feedback general del revisor ────────────────────── */}
@@ -152,6 +176,7 @@ export default async function CarruselDetallePage({ params }: Props) {
                     composicion={slide.composicion as ComposicionSlide}
                     urlJpg={slide.url_jpg}
                     onExported={() => {}}
+                    puedeEditar={puedeEditar}
                   />
                 ) : (
                   <div
@@ -177,6 +202,17 @@ export default async function CarruselDetallePage({ params }: Props) {
                 </div>
               )}
 
+              {/* Edición de copy (solo editor en borrador / con_cambios) */}
+              {puedeEditar && (
+                <SlideEditor
+                  slideId={slide.id}
+                  carruselId={id}
+                  numero={slide.numero}
+                  copy={slide.copy}
+                  sugerenciaVisual={slide.sugerencia_visual}
+                />
+              )}
+
               {/* Feedback por slide */}
               <FeedbackSlide
                 slideId={slide.id}
@@ -184,6 +220,11 @@ export default async function CarruselDetallePage({ params }: Props) {
                 feedback={slide.feedback_slide}
                 isRevisor={isRevisor}
               />
+
+              {/* Prompt de IA (solo editor) */}
+              {isEditor && slide.prompt_usado && (
+                <PromptAccordion prompt={slide.prompt_usado} />
+              )}
             </div>
           ))}
         </div>

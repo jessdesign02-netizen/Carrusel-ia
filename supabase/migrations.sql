@@ -62,11 +62,22 @@ create table if not exists carruseles (
   enfoque          text not null check (enfoque in ('educativo','promocional','storytelling','tendencia','otro')),
   estado           text not null default 'borrador' check (estado in ('borrador','en_revision','aprobado','con_cambios')),
   feedback_general text,
+  notas            text,
   version          integer not null default 1,
   created_by       uuid references profiles(id),
   created_at       timestamptz default now(),
   updated_at       timestamptz default now()
 );
+
+-- Agregar columna notas si no existe (para bases de datos ya creadas)
+do $$ begin
+  if not exists (
+    select 1 from information_schema.columns
+    where table_name = 'carruseles' and column_name = 'notas'
+  ) then
+    alter table carruseles add column notas text;
+  end if;
+end $$;
 
 -- Trigger: actualizar updated_at automáticamente
 create or replace function update_updated_at()

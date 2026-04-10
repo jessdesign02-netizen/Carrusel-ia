@@ -48,6 +48,7 @@ export interface Carrusel {
   enfoque: EnfoqueCarrusel
   estado: EstadoCarrusel
   feedback_general: string | null
+  notas: string | null
   version: number
   publicado_at: string | null
   created_at: string

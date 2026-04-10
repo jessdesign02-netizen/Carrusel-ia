@@ -1,4 +1,5 @@
 import type { ComposicionSlide } from '@/types'
+import FontLoader from './FontLoader'
 
 interface Props {
   composicion: ComposicionSlide
@@ -51,6 +52,7 @@ export default function SlideRenderer({ composicion, numero, total, exportMode =
 
   return (
     <div style={containerStyle}>
+      <FontLoader fontName={tipografia} />
       {/* ── Fondo / imagen ──────────────────────────────────── */}
       {imagenUrl && (layout === 'hook' || layout === 'texto-centrado') && (
         <div
