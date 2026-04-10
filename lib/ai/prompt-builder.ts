@@ -38,9 +38,24 @@ export function buildCompositionPrompt(params: BuildPromptParams): string {
       ? 'CTA: último slide. Llamada a la acción clara. Mostrar datos de contacto o acción específica del copy. Diseño limpio y memorable.'
       : `Slide ${numeroSlide} de ${totalSlides}. Contenido de desarrollo. Jerarquía clara texto titular + secundario.`
 
+  const identidadExtra = [
+    marca.sector            && `Sector: ${marca.sector}`,
+    marca.descripcion       && `Propósito de marca: ${marca.descripcion}`,
+    marca.publico_objetivo  && `Público objetivo: ${marca.publico_objetivo}`,
+    marca.personalidad      && `Personalidad: ${marca.personalidad}`,
+    marca.estilo_visual     && `Estilo visual: ${marca.estilo_visual}`,
+    marca.tono_comunicacion && `Tono de comunicación: ${marca.tono_comunicacion}`,
+    marca.palabras_clave    && `Palabras que definen la marca: ${marca.palabras_clave}`,
+    marca.palabras_evitar   && `Palabras/estilos a EVITAR: ${marca.palabras_evitar}`,
+    marca.referencias       && `Marcas de referencia/inspiración: ${marca.referencias}`,
+  ].filter(Boolean).join('\n')
+
   return `Eres un director de arte especialista en redes sociales. Debes diseñar la composición visual de un slide para un carrusel de Instagram.
 
 ## GUÍA DE MARCA: ${marca.nombre}
+
+**Identidad de marca**:
+${identidadExtra || '  (sin información adicional)'}
 
 **Paleta de colores** (USA SOLO ESTOS):
 - Primario:   ${marca.colores?.primario ?? '#000000'}

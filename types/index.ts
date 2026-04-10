@@ -17,9 +17,19 @@ export interface Tipografia {
 export interface Marca {
   id: string
   nombre: string
+  sector: string | null
+  descripcion: string | null
+  publico_objetivo: string | null
   colores: ColorPaleta
   tipografias: Tipografia[]
+  personalidad: string | null
+  estilo_visual: string | null
   tono_visual: string | null
+  tono_comunicacion: string | null
+  palabras_clave: string | null
+  palabras_evitar: string | null
+  referencias: string | null
+  manual_marca_url: string | null
   created_at: string
 }
 

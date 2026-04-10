@@ -282,8 +282,19 @@ create index if not exists idx_versiones_carrusel_id on versiones_carrusel(carru
 --   update profiles set rol = 'revisor' where email = 'pm@tuempresa.com';
 
 -- ─── ADDENDUM: imagen_referencia en carruseles ────────────────────────────────
--- Foto o logo de referencia que el usuario adjunta al crear el carrusel
 alter table carruseles add column if not exists imagen_referencia text;
+
+-- ─── ADDENDUM: campos detallados de marca ─────────────────────────────────────
+alter table marcas add column if not exists sector text;
+alter table marcas add column if not exists descripcion text;
+alter table marcas add column if not exists publico_objetivo text;
+alter table marcas add column if not exists personalidad text;
+alter table marcas add column if not exists estilo_visual text;
+alter table marcas add column if not exists tono_comunicacion text;
+alter table marcas add column if not exists palabras_clave text;
+alter table marcas add column if not exists palabras_evitar text;
+alter table marcas add column if not exists referencias text;
+alter table marcas add column if not exists manual_marca_url text;
 
 -- ─── ADDENDUM: columna composicion en slides ──────────────────────────────────
 -- Ejecutar si ya corriste las migrations anteriores
