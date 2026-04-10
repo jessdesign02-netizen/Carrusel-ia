@@ -6,12 +6,41 @@ export const metadata: Metadata = {
   title: 'Marcas — Carrusel IA',
 }
 
+const MARCAS_DEMO: Marca[] = [
+  {
+    id: 'demo-juan',
+    nombre: 'Juan',
+    colores: { primario: '#6366f1', secundario: '#a5b4fc', acento: '#4f46e5', neutro: '#f1f5f9' },
+    tipografias: [{ nombre: 'Inter', peso: '700', uso: 'títulos' }],
+    tono_visual: 'Moderno y profesional con toques creativos.',
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: 'demo-marco',
+    nombre: 'Marco',
+    colores: { primario: '#10b981', secundario: '#6ee7b7', acento: '#059669', neutro: '#f0fdf4' },
+    tipografias: [{ nombre: 'Inter', peso: '700', uso: 'títulos' }],
+    tono_visual: 'Fresco, natural y cercano.',
+    created_at: new Date().toISOString(),
+  },
+  {
+    id: 'demo-saleads',
+    nombre: 'Saleads',
+    colores: { primario: '#f59e0b', secundario: '#fcd34d', acento: '#d97706', neutro: '#fffbeb' },
+    tipografias: [{ nombre: 'Inter', peso: '700', uso: 'títulos' }],
+    tono_visual: 'Energético, directo y orientado a resultados.',
+    created_at: new Date().toISOString(),
+  },
+]
+
 export default async function MarcasPage() {
   const supabase = await createClient()
-  const { data: marcas, error } = await supabase
+  const { data: marcasDB, error } = await supabase
     .from('marcas')
     .select('*')
     .order('created_at', { ascending: false })
+
+  const marcas = [...MARCAS_DEMO, ...(marcasDB ?? [])]
 
   return (
     <div>
