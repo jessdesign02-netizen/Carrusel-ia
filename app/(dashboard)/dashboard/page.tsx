@@ -3,23 +3,21 @@ import { redirect } from 'next/navigation'
 import type { Metadata } from 'next'
 import type { EstadoCarrusel, RolUsuario } from '@/types'
 
-export const metadata: Metadata = {
-  title: 'Dashboard — Carrusel IA',
-}
+export const metadata: Metadata = { title: 'Dashboard — Carrusel IA' }
 
-const estadoConfig: Record<EstadoCarrusel, { label: string; color: string; bg: string; desc: string }> = {
-  en_revision: { label: 'En revisión',  color: 'text-yellow-700', bg: 'bg-yellow-50 border-yellow-200',  desc: 'Esperando aprobación' },
-  con_cambios: { label: 'Con cambios',  color: 'text-red-700',    bg: 'bg-red-50 border-red-200',        desc: 'Requieren ajustes' },
-  borrador:    { label: 'Borradores',   color: 'text-gray-700',   bg: 'bg-gray-50 border-gray-200',      desc: 'En preparación' },
-  aprobado:    { label: 'Aprobados',    color: 'text-green-700',  bg: 'bg-green-50 border-green-200',    desc: 'Listos para publicar' },
+const estadoConfig: Record<EstadoCarrusel, { label: string; desc: string; color: string; bg: string; border: string }> = {
+  en_revision: { label: 'En revisión',  desc: 'Esperando aprobación', color: 'var(--accent-blue)',     bg: 'rgba(122,184,245,0.14)',  border: 'rgba(122,184,245,0.30)'  },
+  con_cambios: { label: 'Con cambios',  desc: 'Requieren ajustes',    color: 'var(--accent-negative)', bg: 'rgba(240,128,128,0.12)',  border: 'rgba(240,128,128,0.28)'  },
+  borrador:    { label: 'Borradores',   desc: 'En preparación',       color: 'var(--text-secondary)',  bg: 'rgba(255,255,255,0.30)',  border: 'rgba(255,255,255,0.50)'  },
+  aprobado:    { label: 'Aprobados',    desc: 'Listos para publicar', color: 'var(--accent-positive)', bg: 'rgba(96,200,160,0.14)',   border: 'rgba(96,200,160,0.30)'   },
 }
 
 interface CarruselReciente {
-  id:          string
-  enfoque:     string
-  estado:      EstadoCarrusel
-  updated_at:  string
-  marca:       { nombre: string } | null
+  id:         string
+  enfoque:    string
+  estado:     EstadoCarrusel
+  updated_at: string
+  marca:      { nombre: string } | null
 }
 
 export default async function DashboardPage() {
@@ -35,7 +33,6 @@ export default async function DashboardPage() {
 
   const rol = (profile?.rol ?? 'editor') as RolUsuario
 
-  // Conteos por estado en paralelo
   const [
     { count: nEnRevision },
     { count: nConCambios },
@@ -48,19 +45,12 @@ export default async function DashboardPage() {
     supabase.from('carruseles').select('*', { count: 'exact', head: true }).eq('estado', 'con_cambios'),
     supabase.from('carruseles').select('*', { count: 'exact', head: true }).eq('estado', 'borrador'),
     supabase.from('carruseles').select('*', { count: 'exact', head: true }).eq('estado', 'aprobado'),
-    supabase
-      .from('carruseles')
-      .select('id, enfoque, estado, updated_at, marca:marcas(nombre)')
-      .order('updated_at', { ascending: false })
-      .limit(6),
+    supabase.from('carruseles').select('id, enfoque, estado, updated_at, marca:marcas(nombre)').order('updated_at', { ascending: false }).limit(6),
     supabase.from('marcas').select('*', { count: 'exact', head: true }),
   ])
 
   const nombre = profile?.nombre ?? user.email ?? 'usuario'
-
-  // Verificar credenciales configuradas
   const missingAnthropicKey = !process.env.ANTHROPIC_API_KEY
-  const missingFalKey       = !process.env.FAL_KEY
 
   const stats: Array<{ estado: EstadoCarrusel; count: number }> = [
     { estado: 'en_revision', count: nEnRevision ?? 0 },
@@ -69,125 +59,116 @@ export default async function DashboardPage() {
     { estado: 'aprobado',    count: nAprobado   ?? 0 },
   ]
 
-  const totalCarruseles = (nEnRevision ?? 0) + (nConCambios ?? 0) + (nBorrador ?? 0) + (nAprobado ?? 0)
+  const totalCarruseles = stats.reduce((s, x) => s + x.count, 0)
 
   return (
-    <div className="space-y-8 max-w-4xl">
+    <div className="space-y-6 max-w-4xl">
 
       {/* Bienvenida */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">
-          Hola, {nombre.split('@')[0]} 👋
+        <h1 style={{ fontSize: 24, fontWeight: 500, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+          Hola, {nombre.split('@')[0]} ✦
         </h1>
-        <p className="text-sm text-gray-500 mt-1">
-          {totalCarruseles} carrusel{totalCarruseles !== 1 ? 'es' : ''} en total
+        <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>
+          {totalCarruseles} carrusel{totalCarruseles !== 1 ? 'es' : ''}
           {nMarcas ? ` · ${nMarcas} marca${nMarcas !== 1 ? 's' : ''}` : ''}
         </p>
       </div>
 
-      {/* Aviso de credenciales faltantes */}
-      {(missingAnthropicKey || missingFalKey) && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
-          <p className="text-sm font-semibold text-amber-900">Configuración pendiente</p>
-          {missingAnthropicKey && (
-            <p className="text-xs text-amber-700">
-              <span className="font-mono bg-amber-100 px-1 rounded">ANTHROPIC_API_KEY</span> no configurada →
-              la generación con IA no funcionará. Agrégala en <span className="font-mono">.env.local</span>.
-            </p>
-          )}
-          {missingFalKey && (
-            <p className="text-xs text-amber-700">
-              <span className="font-mono bg-amber-100 px-1 rounded">FAL_KEY</span> no configurada →
-              la generación de imágenes con Flux está desactivada (opcional).
-            </p>
-          )}
+      {/* Aviso de configuración */}
+      {missingAnthropicKey && (
+        <div className="glass-l2 px-4 py-3" style={{ borderLeft: '3px solid rgba(240,160,192,0.60)' }}>
+          <p style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 2 }}>Configuración pendiente</p>
+          <p style={{ fontSize: 12, color: 'var(--text-secondary)' }}>
+            <code style={{ background: 'rgba(255,255,255,0.40)', padding: '1px 6px', borderRadius: 4, fontSize: 11 }}>ANTHROPIC_API_KEY</code>
+            {' '}no configurada — la generación con IA no funcionará. Agrégala en{' '}
+            <code style={{ background: 'rgba(255,255,255,0.40)', padding: '1px 6px', borderRadius: 4, fontSize: 11 }}>.env.local</code>.
+          </p>
         </div>
       )}
 
-      {/* Cards de estado */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Stats cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {stats.map(({ estado, count }) => {
           const cfg = estadoConfig[estado]
           return (
             <a
               key={estado}
               href={`/carruseles?estado=${estado}`}
-              className={`rounded-xl border p-4 hover:shadow-md transition-shadow ${cfg.bg}`}
+              className="glass-l2 card-glow-hover p-5 block"
+              style={{ textDecoration: 'none', borderLeft: `3px solid ${cfg.border}` }}
             >
-              <p className={`text-3xl font-bold ${cfg.color}`}>{count}</p>
-              <p className={`text-sm font-semibold mt-1 ${cfg.color}`}>{cfg.label}</p>
-              <p className="text-xs text-gray-400 mt-0.5">{cfg.desc}</p>
+              <p style={{ fontSize: 30, fontWeight: 600, color: cfg.color, letterSpacing: '-0.03em', lineHeight: 1 }}>
+                {count}
+              </p>
+              <p style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-primary)', marginTop: 6 }}>{cfg.label}</p>
+              <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>{cfg.desc}</p>
             </a>
           )
         })}
       </div>
 
-      {/* Acción prioritaria según rol */}
+      {/* Acción prioritaria */}
       {rol === 'revisor' && (nEnRevision ?? 0) > 0 && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 flex items-center justify-between gap-4">
+        <div className="glass-l2 px-5 py-4 flex items-center justify-between gap-4" style={{ borderLeft: '3px solid rgba(122,184,245,0.55)' }}>
           <div>
-            <p className="text-sm font-semibold text-yellow-900">
+            <p style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>
               {nEnRevision} carrusel{(nEnRevision ?? 0) !== 1 ? 'es' : ''} esperan tu revisión
             </p>
-            <p className="text-xs text-yellow-700 mt-0.5">Aprueba o solicita cambios para desbloquear la descarga.</p>
+            <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>Aprueba o solicita cambios para desbloquear la descarga.</p>
           </div>
-          <a
-            href="/carruseles?estado=en_revision"
-            className="flex-shrink-0 bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
-          >
-            Revisar ahora
-          </a>
+          <a href="/carruseles?estado=en_revision" className="btn-primary flex-shrink-0">Revisar ahora →</a>
         </div>
       )}
 
       {rol === 'editor' && (nConCambios ?? 0) > 0 && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center justify-between gap-4">
+        <div className="glass-l2 px-5 py-4 flex items-center justify-between gap-4" style={{ borderLeft: '3px solid rgba(240,128,128,0.55)' }}>
           <div>
-            <p className="text-sm font-semibold text-red-900">
+            <p style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>
               {nConCambios} carrusel{(nConCambios ?? 0) !== 1 ? 'es' : ''} con cambios solicitados
             </p>
-            <p className="text-xs text-red-700 mt-0.5">El revisor dejó feedback. Edita y regenera.</p>
+            <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>El revisor dejó feedback. Edita y regenera.</p>
           </div>
-          <a
-            href="/carruseles?estado=con_cambios"
-            className="flex-shrink-0 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
-          >
-            Ver cambios
-          </a>
+          <a href="/carruseles?estado=con_cambios" className="btn-primary flex-shrink-0">Ver cambios →</a>
         </div>
       )}
 
-      {/* Carruseles recientes */}
+      {/* Actividad reciente */}
       {recientes && recientes.length > 0 && (
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold text-gray-900">Actividad reciente</h2>
-            <a href="/carruseles" className="text-xs text-indigo-600 hover:underline">Ver todos →</a>
+            <p style={{ fontSize: 12, fontWeight: 500, color: 'var(--text-secondary)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+              Actividad reciente
+            </p>
+            <a href="/carruseles" style={{ fontSize: 12, color: 'var(--accent-blue)', textDecoration: 'none', fontWeight: 500 }}>
+              Ver todos →
+            </a>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {(recientes as unknown as CarruselReciente[]).map((c) => {
               const cfg = estadoConfig[c.estado]
               return (
                 <a
                   key={c.id}
                   href={`/carruseles/${c.id}`}
-                  className="flex items-center justify-between bg-white border border-gray-200 rounded-xl px-4 py-3 hover:shadow-sm transition-shadow"
+                  className="glass-l2 card-glow-hover flex items-center justify-between px-4 py-3 block"
+                  style={{ textDecoration: 'none' }}
                 >
                   <div className="min-w-0">
-                    <span className="text-sm font-medium text-gray-900 truncate">
+                    <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }} className="truncate">
                       {c.marca?.nombre ?? 'Sin marca'}
                     </span>
-                    <span className="text-gray-400 text-xs ml-2 capitalize">{c.enfoque}</span>
-                    <p className="text-xs text-gray-400 mt-0.5">
-                      {new Date(c.updated_at).toLocaleDateString('es-AR', {
-                        day: '2-digit', month: 'short', year: 'numeric',
-                        hour: '2-digit', minute: '2-digit',
-                      })}
+                    <span style={{ fontSize: 12, color: 'var(--text-muted)', marginLeft: 8 }} className="capitalize">{c.enfoque}</span>
+                    <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
+                      {new Date(c.updated_at).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
-                  <span className={`flex-shrink-0 text-xs font-medium px-2.5 py-1 rounded-full border ${cfg.bg} ${cfg.color}`}>
-                    {cfg.label}
-                  </span>
+                  <span style={{
+                    flexShrink: 0, fontSize: 11, fontWeight: 500,
+                    padding: '3px 10px', borderRadius: 999,
+                    background: cfg.bg, color: cfg.color,
+                    border: `1px solid ${cfg.border}`,
+                  }}>{cfg.label}</span>
                 </a>
               )
             })}
@@ -195,36 +176,28 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* Empty state — sin datos */}
+      {/* Empty state */}
       {totalCarruseles === 0 && (
-        <div className="text-center py-20 bg-white rounded-xl border border-gray-200">
-          <svg className="mx-auto mb-4 w-16 h-16 text-indigo-100" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 64 64">
-            <rect x="8" y="14" width="48" height="36" rx="5" stroke="currentColor" strokeWidth="2" fill="none"/>
-            <path d="M8 24h48" strokeWidth="2"/>
-            <rect x="16" y="32" width="14" height="10" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
-            <path d="M36 32h12M36 37h10M36 42h7" strokeLinecap="round" strokeWidth="2"/>
-            <circle cx="16" cy="19" r="1.5" fill="currentColor"/>
-            <circle cx="22" cy="19" r="1.5" fill="currentColor"/>
-            <circle cx="28" cy="19" r="1.5" fill="currentColor"/>
-          </svg>
-          <p className="text-gray-700 font-semibold text-base">Todo listo para comenzar</p>
-          <p className="text-gray-400 text-sm mt-1.5 mb-5 max-w-xs mx-auto">
+        <div className="glass-l1 text-center py-20 px-8">
+          <div className="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center animate-float-slow" style={{
+            background: 'rgba(122,184,245,0.16)',
+            border: '1px solid rgba(122,184,245,0.30)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.70)',
+          }}>
+            <svg className="w-8 h-8" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" style={{ color: 'var(--accent-blue)', opacity: 0.7 }}>
+              <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+              <path d="M3 9h18" strokeWidth="1.5"/>
+              <rect x="6" y="12" width="5" height="4" rx="1" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+            </svg>
+          </div>
+          <p style={{ fontSize: 15, fontWeight: 500, color: 'var(--text-primary)', marginBottom: 6 }}>Todo listo para comenzar</p>
+          <p style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 24, maxWidth: 260, margin: '0 auto 24px' }}>
             Crea tu primera marca y genera carruseles con IA en segundos.
           </p>
           {rol === 'editor' && (
             <div className="flex items-center justify-center gap-3">
-              <a
-                href="/marcas/nueva"
-                className="text-sm text-gray-600 border border-gray-300 hover:border-indigo-400 hover:text-indigo-600 px-4 py-2 rounded-lg transition-colors"
-              >
-                + Crear marca
-              </a>
-              <a
-                href="/carruseles/nuevo"
-                className="text-sm bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-lg transition-colors"
-              >
-                + Nuevo carrusel →
-              </a>
+              <a href="/marcas/nueva" className="btn-secondary">+ Crear marca</a>
+              <a href="/carruseles/nuevo" className="btn-primary">+ Nuevo carrusel →</a>
             </div>
           )}
         </div>
