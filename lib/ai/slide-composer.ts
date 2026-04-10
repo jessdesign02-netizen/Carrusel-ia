@@ -11,8 +11,9 @@ export async function componerSlide(params: {
   index: number
   totalSlides: number
   enfoque: EnfoqueCarrusel
+  imagenReferencia?: string | null
 }): Promise<{ composicion: ComposicionSlide; promptUsado: string }> {
-  const { marca, assets, slide, index, totalSlides, enfoque } = params
+  const { marca, assets, slide, index, totalSlides, enfoque, imagenReferencia } = params
 
   const posicion = posicionFromIndex(index, totalSlides)
   const prompt = buildCompositionPrompt({
@@ -24,6 +25,7 @@ export async function componerSlide(params: {
     numeroSlide: index + 1,
     totalSlides,
     enfoque,
+    imagenReferencia,
   })
 
   const message = await client.messages.create({

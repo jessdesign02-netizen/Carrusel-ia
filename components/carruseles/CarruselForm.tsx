@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { carruselSchema, type CarruselFormValues } from '@/lib/validations/carrusel'
 import { crearCarrusel } from '@/app/(dashboard)/carruseles/actions'
 import SlideInput from '@/components/slides/SlideInput'
+import { createClient } from '@/lib/supabase/client'
 import type { Marca } from '@/types'
 
 interface Props {
@@ -23,9 +24,13 @@ const ENFOQUES: { value: CarruselFormValues['enfoque']; label: string; desc: str
 const SLIDE_INICIAL = { copy: '', sugerencia_visual: '' }
 
 export default function CarruselForm({ marcas }: Props) {
-  const [step, setStep]         = useState<1 | 2 | 3>(1)
-  const [serverError, setServerError] = useState<string | null>(null)
-  const [generating, setGenerating]   = useState(false)
+  const [step, setStep]                     = useState<1 | 2 | 3>(1)
+  const [serverError, setServerError]       = useState<string | null>(null)
+  const [generating, setGenerating]         = useState(false)
+  const [imagenUrl, setImagenUrl]           = useState<string | null>(null)
+  const [imagenPreview, setImagenPreview]   = useState<string | null>(null)
+  const [uploadingImg, setUploadingImg]     = useState(false)
+  const [uploadError, setUploadError]       = useState<string | null>(null)
 
   const methods = useForm<CarruselFormValues>({
     resolver: zodResolver(carruselSchema),
@@ -56,11 +61,43 @@ export default function CarruselForm({ marcas }: Props) {
   const enfoque = watch('enfoque')
   const marcaSeleccionada = marcas.find((m) => m.id === marcaId)
 
+  async function handleImageUpload(file: File) {
+    setUploadingImg(true)
+    setUploadError(null)
+    try {
+      const preview = URL.createObjectURL(file)
+      setImagenPreview(preview)
+
+      const supabase = createClient()
+      const ext  = file.name.split('.').pop() ?? 'jpg'
+      const path = `referencia/${Date.now()}.${ext}`
+
+      const { error: uploadErr } = await supabase.storage
+        .from('assets-marca')
+        .upload(path, file, { contentType: file.type, upsert: true })
+
+      if (uploadErr) {
+        setUploadError('Error al subir la imagen. Inténtalo de nuevo.')
+        setImagenPreview(null)
+        return
+      }
+
+      const { data } = supabase.storage.from('assets-marca').getPublicUrl(path)
+      setImagenUrl(data.publicUrl)
+      setValue('imagen_referencia', data.publicUrl)
+    } catch {
+      setUploadError('Error inesperado al subir la imagen.')
+      setImagenPreview(null)
+    } finally {
+      setUploadingImg(false)
+    }
+  }
+
   async function onSubmit(values: CarruselFormValues) {
     setServerError(null)
     setGenerating(true)
     try {
-      const result = await crearCarrusel(values)
+      const result = await crearCarrusel({ ...values, imagen_referencia: imagenUrl })
       if (result?.error) {
         setServerError(result.error)
         setGenerating(false)
@@ -220,6 +257,56 @@ export default function CarruselForm({ marcas }: Props) {
           <p className="text-xs text-red-500">{errors.slides.root.message}</p>
         )}
 
+        {/* Imagen de referencia */}
+        <div className="border border-gray-200 rounded-xl p-4 bg-white">
+          <p className="text-sm font-medium text-gray-800 mb-1">Imagen de referencia <span className="text-gray-400 font-normal">(opcional)</span></p>
+          <p className="text-xs text-gray-500 mb-3">Adjunta una foto de la persona o el logo del cliente para que la IA lo use en las piezas.</p>
+
+          {imagenPreview ? (
+            <div className="flex items-center gap-3">
+              <img
+                src={imagenPreview}
+                alt="Referencia"
+                className="w-16 h-16 rounded-lg object-cover border border-gray-200 flex-shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                {uploadingImg ? (
+                  <p className="text-xs text-indigo-600 flex items-center gap-1.5">
+                    <span className="animate-spin inline-block w-3 h-3 border-2 border-indigo-600 border-t-transparent rounded-full" />
+                    Subiendo imagen…
+                  </p>
+                ) : imagenUrl ? (
+                  <p className="text-xs text-green-600 font-medium">✓ Imagen cargada correctamente</p>
+                ) : null}
+                {uploadError && <p className="text-xs text-red-500 mt-1">{uploadError}</p>}
+              </div>
+              <button
+                type="button"
+                onClick={() => { setImagenPreview(null); setImagenUrl(null); setValue('imagen_referencia', null) }}
+                className="text-xs text-gray-400 hover:text-red-500 flex-shrink-0"
+              >
+                Quitar
+              </button>
+            </div>
+          ) : (
+            <label className={`flex items-center justify-center gap-2 border-2 border-dashed rounded-lg p-4 cursor-pointer transition-colors ${uploadingImg ? 'border-indigo-300 bg-indigo-50' : 'border-gray-300 hover:border-indigo-400 hover:bg-indigo-50'}`}>
+              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+              </svg>
+              <span className="text-sm text-gray-500">Subir foto o logo</span>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  if (file) handleImageUpload(file)
+                }}
+              />
+            </label>
+          )}
+        </div>
+
         {/* Resumen */}
         <div className="bg-gray-50 rounded-xl p-4 text-sm border border-gray-200">
           <p className="font-medium text-gray-700 mb-1">Resumen</p>
@@ -227,6 +314,7 @@ export default function CarruselForm({ marcas }: Props) {
             <span>Marca: <strong className="text-gray-900">{marcaSeleccionada?.nombre}</strong></span>
             <span>Enfoque: <strong className="text-gray-900 capitalize">{enfoque}</strong></span>
             <span>Slides: <strong className="text-gray-900">{fields.length}</strong></span>
+            {imagenUrl && <span>Imagen: <strong className="text-green-700">✓ adjunta</strong></span>}
           </div>
         </div>
 

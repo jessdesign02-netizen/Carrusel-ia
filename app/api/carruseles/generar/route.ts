@@ -42,9 +42,10 @@ export async function POST(request: NextRequest) {
     return new Response(JSON.stringify({ error: 'No hay slides' }), { status: 400 })
   }
 
-  const marca       = carrusel.marca as Marca
-  const assetsLista = (assets ?? []) as AssetMarca[]
-  const totalSlides = slides.length
+  const marca            = carrusel.marca as Marca
+  const assetsLista      = (assets ?? []) as AssetMarca[]
+  const totalSlides      = slides.length
+  const imagenReferencia = carrusel.imagen_referencia as string | null ?? null
 
   // Streaming SSE para mostrar progreso en tiempo real
   const encoder = new TextEncoder()
@@ -66,11 +67,12 @@ export async function POST(request: NextRequest) {
         try {
           const { composicion, promptUsado } = await componerSlide({
             marca,
-            assets:      assetsLista,
+            assets:           assetsLista,
             slide,
-            index:       i,
+            index:            i,
             totalSlides,
-            enfoque:     carrusel.enfoque as EnfoqueCarrusel,
+            enfoque:          carrusel.enfoque as EnfoqueCarrusel,
+            imagenReferencia,
           })
 
           if (composicion.generarImagen && composicion.promptImagen && process.env.FAL_KEY) {

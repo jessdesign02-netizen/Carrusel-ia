@@ -19,11 +19,12 @@ export async function crearCarrusel(values: CarruselFormValues) {
   const { data: carrusel, error: carruselError } = await supabase
     .from('carruseles')
     .insert({
-      marca_id:   parsed.data.marca_id,
-      enfoque:    parsed.data.enfoque,
-      estado:     'borrador',
-      version:    1,
-      created_by: user.id,
+      marca_id:          parsed.data.marca_id,
+      enfoque:           parsed.data.enfoque,
+      estado:            'borrador',
+      version:           1,
+      created_by:        user.id,
+      imagen_referencia: parsed.data.imagen_referencia ?? null,
     })
     .select()
     .single()

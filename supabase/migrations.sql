@@ -281,6 +281,10 @@ create index if not exists idx_versiones_carrusel_id on versiones_carrusel(carru
 -- Luego actualiza su rol en la tabla profiles:
 --   update profiles set rol = 'revisor' where email = 'pm@tuempresa.com';
 
+-- ─── ADDENDUM: imagen_referencia en carruseles ────────────────────────────────
+-- Foto o logo de referencia que el usuario adjunta al crear el carrusel
+alter table carruseles add column if not exists imagen_referencia text;
+
 -- ─── ADDENDUM: columna composicion en slides ──────────────────────────────────
 -- Ejecutar si ya corriste las migrations anteriores
 alter table slides add column if not exists composicion jsonb;

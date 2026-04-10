@@ -9,10 +9,11 @@ interface BuildPromptParams {
   numeroSlide: number
   totalSlides: number
   enfoque: EnfoqueCarrusel
+  imagenReferencia?: string | null
 }
 
 export function buildCompositionPrompt(params: BuildPromptParams): string {
-  const { marca, assets, copy, sugerenciaVisual, posicion, numeroSlide, totalSlides, enfoque } = params
+  const { marca, assets, copy, sugerenciaVisual, posicion, numeroSlide, totalSlides, enfoque, imagenReferencia } = params
 
   const assetsPorTipo = assets.reduce<Record<string, string[]>>((acc, a) => {
     if (!acc[a.tipo]) acc[a.tipo] = []
@@ -59,6 +60,8 @@ ${assetsText}
 
 **Copy del slide**: "${copy}"
 ${sugerenciaVisual ? `**Sugerencia visual del diseñador**: ${sugerenciaVisual}` : '**Sugerencia visual**: ninguna — decide tú basándote en el copy y la marca'}
+${imagenReferencia ? `**IMAGEN DE REFERENCIA DEL CLIENTE** (foto de persona o logo adjuntado): ${imagenReferencia}
+→ USA esta imagen como assetElementoUrl o assetFondoUrl según corresponda al layout. NO generes una imagen nueva si tienes esta referencia disponible. Intégrala de forma orgánica en la composición.` : ''}
 **Posición**: ${posicionHint}
 **Enfoque del carrusel**: ${enfoque}
 
@@ -69,7 +72,7 @@ ${sugerenciaVisual ? `**Sugerencia visual del diseñador**: ${sugerenciaVisual}`
 3. textoTitular es la frase principal del copy (puede ser reformulada creativamente)
 4. Si el copy menciona una plataforma, marca o concepto reconocible (Meta, Instagram, Google, etc.), incorporar elementos alusivos en el promptImagen
 5. Las imágenes deben integrarse de forma orgánica, nunca como un rectángulo pegado
-6. Si hay una foto disponible en los assets, preferir usarla sobre generar una nueva
+6. Si hay una IMAGEN DE REFERENCIA DEL CLIENTE, úsala SIEMPRE como assetElementoUrl o assetFondoUrl — tiene prioridad sobre cualquier asset y sobre generar imagen nueva
 
 ## RESPUESTA REQUERIDA
 

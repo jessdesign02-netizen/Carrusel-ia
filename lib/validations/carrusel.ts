@@ -6,8 +6,9 @@ export const slideInputSchema = z.object({
 })
 
 export const carruselSchema = z.object({
-  marca_id:   z.string().uuid('Selecciona una marca'),
-  enfoque:    z.enum(['educativo', 'promocional', 'storytelling', 'tendencia', 'otro']),
+  marca_id:          z.string().uuid('Selecciona una marca'),
+  enfoque:           z.enum(['educativo', 'promocional', 'storytelling', 'tendencia', 'otro']),
+  imagen_referencia: z.string().url().optional().nullable(),
   slides: z
     .array(slideInputSchema)
     .min(3, 'Mínimo 3 slides')
