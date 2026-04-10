@@ -22,20 +22,20 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <ToastProvider>
     <div className="min-h-screen flex">
       {/* Sidebar */}
-      <aside className="w-56 bg-white border-r border-gray-200 flex flex-col">
-        <div className="p-5 border-b border-gray-200">
-          <h1 className="text-base font-bold text-gray-900">Carrusel IA</h1>
+      <aside className="sidebar-glow w-56 flex flex-col flex-shrink-0 sticky top-0 h-screen">
+        <div className="p-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.40)' }}>
+          <h1 className="text-sm font-medium" style={{ color: 'rgba(90,55,120,0.90)' }}>✦ Carrusel IA</h1>
         </div>
 
         <NavLinks rol={profile?.rol ?? 'editor'} />
 
-        <div className="p-4 border-t border-gray-200">
-          <div className="flex items-center justify-between">
+        <div className="p-4" style={{ borderTop: '1px solid rgba(255,255,255,0.40)' }}>
+          <div className="flex items-center justify-between gap-2">
             <div className="min-w-0">
-              <p className="text-xs font-medium text-gray-900 truncate">
+              <p className="text-xs font-medium truncate" style={{ color: 'var(--text-primary)' }}>
                 {profile?.nombre ?? user.email}
               </p>
-              <p className="text-xs text-gray-500 capitalize">{profile?.rol}</p>
+              <p className="text-xs capitalize" style={{ color: 'var(--text-muted)' }}>{profile?.rol}</p>
             </div>
             <LogoutButton />
           </div>

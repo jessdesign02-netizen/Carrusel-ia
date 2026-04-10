@@ -46,15 +46,10 @@ export default async function MarcasPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Marcas</h1>
-          <p className="text-sm text-gray-500 mt-1">Gestiona las guías de marca y sus assets</p>
+          <h1 className="text-2xl" style={{ fontWeight: 500, color: 'var(--text-primary)' }}>Marcas</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>Gestiona las guías de marca y sus assets</p>
         </div>
-        <a
-          href="/marcas/nueva"
-          className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-        >
-          + Nueva marca
-        </a>
+        <a href="/marcas/nueva" className="btn-primary">+ Nueva marca</a>
       </div>
 
       {error && (
@@ -64,21 +59,16 @@ export default async function MarcasPage() {
       )}
 
       {!error && (!marcas || marcas.length === 0) && (
-        <div className="text-center py-20 bg-white rounded-xl border border-gray-200">
-          <svg className="mx-auto mb-4 w-14 h-14 text-indigo-100" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 48 48">
-            <rect x="8" y="12" width="32" height="28" rx="4" stroke="currentColor" strokeWidth="2" fill="none"/>
-            <circle cx="24" cy="22" r="5" stroke="currentColor" strokeWidth="2" fill="none"/>
-            <path d="M14 36c1.5-4 5.5-6 10-6s8.5 2 10 6" strokeLinecap="round" stroke="currentColor" strokeWidth="2"/>
-            <path d="M18 8h12" strokeLinecap="round" stroke="currentColor" strokeWidth="2"/>
-          </svg>
-          <p className="text-gray-600 font-medium">Todavía no hay marcas</p>
-          <p className="text-gray-400 text-sm mt-1 mb-4">Crea la guía de marca y sube sus assets para empezar a generar carruseles.</p>
-          <a
-            href="/marcas/nueva"
-            className="inline-block bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors"
-          >
-            + Crear primera marca
-          </a>
+        <div className="card-glow text-center py-20 px-8">
+          <div className="w-16 h-16 rounded-3xl mx-auto mb-4 animate-float-slow flex items-center justify-center" style={{
+            background: 'linear-gradient(135deg, rgba(253,216,122,0.40) 0%, rgba(184,168,212,0.35) 100%)',
+            boxShadow: 'inset 0 1.5px 1px rgba(255,255,255,0.70)',
+          }}>
+            <span style={{ fontSize: '1.75rem', opacity: 0.7 }}>◎</span>
+          </div>
+          <p className="font-medium mb-1" style={{ color: 'var(--text-primary)' }}>Todavía no hay marcas</p>
+          <p className="text-sm mb-6" style={{ color: 'var(--text-muted)' }}>Crea la guía de marca y sube sus assets para empezar a generar carruseles.</p>
+          <a href="/marcas/nueva" className="btn-primary">+ Crear primera marca</a>
         </div>
       )}
 
@@ -88,29 +78,41 @@ export default async function MarcasPage() {
             <a
               key={marca.id}
               href={`/marcas/${marca.id}`}
-              className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow"
+              className="card-glow card-glow-hover p-5 block"
+              style={{ textDecoration: 'none' }}
             >
               <div className="flex items-center gap-3 mb-3">
                 <div
-                  className="w-8 h-8 rounded-full flex-shrink-0"
-                  style={{ backgroundColor: marca.colores?.primario ?? '#6366f1' }}
+                  className="w-9 h-9 rounded-2xl flex-shrink-0"
+                  style={{
+                    backgroundColor: marca.colores?.primario ?? '#6366f1',
+                    boxShadow: `0 2px 10px ${marca.colores?.primario ?? '#6366f1'}55, inset 0 1px 1px rgba(255,255,255,0.40)`,
+                  }}
                 />
-                <h2 className="font-semibold text-gray-900 truncate">{marca.nombre}</h2>
+                <h2 className="font-medium truncate" style={{ color: 'var(--text-primary)', fontSize: '0.9375rem' }}>
+                  {marca.nombre}
+                </h2>
               </div>
 
-              <div className="flex gap-1.5 flex-wrap">
+              <div className="flex gap-1.5 flex-wrap mb-2">
                 {Object.entries(marca.colores ?? {}).map(([key, hex]) => (
                   <div
                     key={key}
-                    className="w-5 h-5 rounded-full border border-gray-200"
-                    style={{ backgroundColor: hex as string }}
+                    className="w-5 h-5 rounded-full"
+                    style={{
+                      backgroundColor: hex as string,
+                      boxShadow: `0 1px 4px ${hex as string}66`,
+                      border: '1.5px solid rgba(255,255,255,0.60)',
+                    }}
                     title={`${key}: ${hex}`}
                   />
                 ))}
               </div>
 
-              {marca.tono_visual && (
-                <p className="text-xs text-gray-500 mt-2 line-clamp-2">{marca.tono_visual}</p>
+              {(marca.tono_visual || marca.sector) && (
+                <p className="text-xs line-clamp-2" style={{ color: 'var(--text-muted)' }}>
+                  {marca.sector ? `${marca.sector} · ` : ''}{marca.tono_visual}
+                </p>
               )}
             </a>
           ))}
