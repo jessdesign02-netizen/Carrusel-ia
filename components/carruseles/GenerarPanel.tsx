@@ -25,7 +25,7 @@ export default function GenerarPanel({ carruselId, totalSlides, yaGenerado }: Pr
   const router    = useRouter()
   const [loading,  setLoading]  = useState(false)
   const [progreso, setProgreso] = useState<string | null>(null)
-  const [avance,   setAvance]   = useState<number>(0)   // 0-100
+  const [avance,   setAvance]   = useState<number>(0)
   const [error,    setError]    = useState<string | null>(null)
 
   async function handleGenerar() {
@@ -49,7 +49,6 @@ export default function GenerarPanel({ carruselId, totalSlides, yaGenerado }: Pr
         return
       }
 
-      // Leer el stream SSE
       const reader  = res.body.getReader()
       const decoder = new TextDecoder()
       let   buffer  = ''
@@ -60,7 +59,7 @@ export default function GenerarPanel({ carruselId, totalSlides, yaGenerado }: Pr
 
         buffer += decoder.decode(value, { stream: true })
         const lines = buffer.split('\n')
-        buffer = lines.pop() ?? ''   // conservar línea incompleta
+        buffer = lines.pop() ?? ''
 
         for (const line of lines) {
           if (!line.startsWith('data: ')) continue
@@ -128,20 +127,20 @@ export default function GenerarPanel({ carruselId, totalSlides, yaGenerado }: Pr
           {loading && (
             <div className="mt-3 space-y-1.5">
               <div className="flex items-center gap-2">
-                <span className="animate-spin inline-block w-3 h-3 border-2 border-t-transparent rounded-full flex-shrink-0" style={{ borderColor: 'var(--salmon-accent)', borderTopColor: 'transparent' }} />
-                <p className="text-xs font-medium truncate" style={{ color: 'var(--text-secondary)' }}>{progreso}</p>
+                <span className="animate-spin inline-block w-3 h-3 border-2 border-t-transparent rounded-full flex-shrink-0" style={{ borderColor: 'var(--accent-blue)', borderTopColor: 'transparent' }} />
+                <p className="text-xs truncate" style={{ color: 'var(--text-secondary)' }}>{progreso}</p>
               </div>
-              <div className="w-full rounded-full h-1.5" style={{ background: 'rgba(217,96,64,0.12)' }}>
+              <div className="w-full rounded-full h-1" style={{ background: 'rgba(122,184,245,0.15)' }}>
                 <div
-                  className="h-1.5 rounded-full transition-all duration-300"
-                  style={{ width: `${avance}%`, background: 'linear-gradient(90deg, var(--salmon-strong), var(--salmon-accent))' }}
+                  className="h-1 rounded-full transition-all duration-300"
+                  style={{ width: `${avance}%`, background: 'linear-gradient(90deg, var(--accent-blue), var(--accent-lavender))' }}
                 />
               </div>
             </div>
           )}
 
           {error && (
-            <p className="text-xs px-3 py-2 mt-2" style={{ color: '#C05030', background: 'rgba(217,96,64,0.08)', border: '1px solid rgba(217,96,64,0.18)', borderRadius: '10px' }}>{error}</p>
+            <p className="text-xs px-3 py-2 mt-2" style={{ color: 'var(--accent-negative)', background: 'rgba(240,128,128,0.12)', border: '1px solid rgba(240,128,128,0.25)', borderRadius: 10 }}>{error}</p>
           )}
         </div>
 

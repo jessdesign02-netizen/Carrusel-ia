@@ -7,10 +7,10 @@ import type { EstadoCarrusel } from '@/types'
 export const metadata: Metadata = { title: 'Carruseles — Carrusel IA' }
 
 const estadoLabel: Record<EstadoCarrusel, { label: string; style: React.CSSProperties }> = {
-  borrador:    { label: 'Borrador',    style: { background: 'rgba(240,240,240,0.80)', color: '#888888', border: '1px solid #E8E8E8' } },
-  en_revision: { label: 'En revisión', style: { background: 'rgba(253,240,235,0.85)', color: '#C05030', border: '1px solid rgba(237,160,128,0.40)' } },
-  aprobado:    { label: 'Aprobado',    style: { background: 'rgba(220,242,228,0.85)', color: '#2E7D4E', border: '1px solid rgba(120,200,150,0.40)' } },
-  con_cambios: { label: 'Con cambios', style: { background: 'rgba(253,240,235,0.85)', color: '#A03820', border: '1px solid rgba(217,96,64,0.35)' } },
+  borrador:    { label: 'Borrador',    style: { background: 'rgba(255,255,255,0.30)', color: '#A0B0C8', border: '1px solid rgba(255,255,255,0.50)' } },
+  en_revision: { label: 'En revisión', style: { background: 'rgba(240,160,192,0.18)', color: '#C07898', border: '1px solid rgba(240,160,192,0.38)' } },
+  aprobado:    { label: 'Aprobado',    style: { background: 'rgba(96,200,160,0.18)',  color: '#3A9870', border: '1px solid rgba(96,200,160,0.38)'  } },
+  con_cambios: { label: 'Con cambios', style: { background: 'rgba(122,184,245,0.18)', color: '#4A88C8', border: '1px solid rgba(122,184,245,0.38)' } },
 }
 
 interface SlideResumen { numero: number; url_jpg: string | null }
@@ -85,16 +85,17 @@ export default async function CarruselesPage({ searchParams }: Props) {
       </div>
 
       {error && (
-        <div className="px-4 py-3 rounded-2xl mb-4 text-sm" style={{ background: 'rgba(255,200,200,0.30)', color: 'rgba(160,50,50,0.85)', border: '1px solid rgba(255,180,180,0.40)' }}>
+        <div className="px-4 py-3 rounded-2xl mb-4 text-sm" style={{ background: 'rgba(240,128,128,0.12)', color: 'var(--accent-negative)', border: '1px solid rgba(240,128,128,0.25)' }}>
           Error al cargar carruseles.
         </div>
       )}
 
       {!error && rows.length === 0 && (
         <div className="card-glow text-center py-20 px-8">
-          <div className="w-16 h-16 rounded-3xl mx-auto mb-4 animate-float-slow flex items-center justify-center" style={{
-            background: 'linear-gradient(135deg, rgba(253,216,122,0.40) 0%, rgba(184,168,212,0.35) 100%)',
-            boxShadow: 'inset 0 1.5px 1px rgba(255,255,255,0.70)',
+          <div className="w-16 h-16 rounded-2xl mx-auto mb-4 animate-float-slow flex items-center justify-center" style={{
+            background: 'rgba(122,184,245,0.18)',
+            border: '1px solid rgba(122,184,245,0.35)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.70)',
           }}>
             <span style={{ fontSize: '1.75rem', opacity: 0.7 }}>▦</span>
           </div>
@@ -125,8 +126,8 @@ export default async function CarruselesPage({ searchParams }: Props) {
             return (
               <a key={c.id} href={`/carruseles/${c.id}`} className="card-glow card-glow-hover flex items-center gap-4 px-4 py-3 block" style={{ textDecoration: 'none' }}>
                 {/* Thumbnail */}
-                <div className="flex-shrink-0 w-14 h-14 rounded-2xl overflow-hidden" style={{
-                  background: 'linear-gradient(135deg, rgba(253,216,122,0.25) 0%, rgba(184,168,212,0.25) 100%)',
+                <div className="flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden" style={{
+                  background: 'rgba(122,184,245,0.14)',
                   border: '1px solid rgba(255,255,255,0.55)',
                 }}>
                   {thumb ? (
@@ -150,7 +151,7 @@ export default async function CarruselesPage({ searchParams }: Props) {
                   <div className="flex items-center gap-3 text-xs" style={{ color: 'var(--text-muted)' }}>
                     <span>{new Date(c.updated_at).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
                     <span>{nJpg > 0 ? `${nJpg}/${nSlides} JPGs` : `${nSlides} slide${nSlides !== 1 ? 's' : ''}`}</span>
-                    {c.publicado_at && <span style={{ color: 'rgba(30,100,65,0.80)', fontWeight: 500 }}>Publicado</span>}
+                    {c.publicado_at && <span style={{ color: 'var(--accent-positive)', fontWeight: 500 }}>Publicado</span>}
                   </div>
                 </div>
 
@@ -188,19 +189,20 @@ const pageBtn: React.CSSProperties = {
   padding: '0.35rem 0.75rem',
   fontSize: '0.75rem',
   fontWeight: 400,
-  borderRadius: '12px',
-  background: 'rgba(255,255,255,0.48)',
-  border: '1px solid rgba(180,210,240,0.38)',
+  borderRadius: '10px',
+  background: 'rgba(255,255,255,0.30)',
+  border: '1px solid rgba(255,255,255,0.50)',
   color: 'var(--text-secondary)',
   textDecoration: 'none',
-  transition: 'all 0.15s ease',
+  transition: 'all 0.2s ease',
+  backdropFilter: 'blur(8px)',
 }
 const pageBtnActive: React.CSSProperties = {
   ...pageBtn,
-  background: 'linear-gradient(135deg, rgba(253,216,122,0.50) 0%, rgba(184,168,212,0.40) 100%)',
-  color: 'rgba(75,45,110,0.92)',
+  background: 'rgba(122,184,245,0.22)',
+  border: '1px solid rgba(122,184,245,0.45)',
+  color: 'var(--accent-blue)',
   fontWeight: 500,
-  border: '1px solid rgba(184,168,212,0.45)',
 }
 const pageBtnDisabled: React.CSSProperties = {
   ...pageBtn,

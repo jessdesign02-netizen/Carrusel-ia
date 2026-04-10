@@ -53,16 +53,17 @@ export default async function MarcasPage() {
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-lg mb-4">
+        <div className="px-4 py-3 rounded-2xl mb-4 text-sm" style={{ background: 'rgba(240,128,128,0.12)', color: 'var(--accent-negative)', border: '1px solid rgba(240,128,128,0.25)' }}>
           Error al cargar marcas. Verifica las credenciales de Supabase en .env.local
         </div>
       )}
 
       {!error && (!marcas || marcas.length === 0) && (
         <div className="card-glow text-center py-20 px-8">
-          <div className="w-16 h-16 rounded-3xl mx-auto mb-4 animate-float-slow flex items-center justify-center" style={{
-            background: 'linear-gradient(135deg, rgba(253,216,122,0.40) 0%, rgba(184,168,212,0.35) 100%)',
-            boxShadow: 'inset 0 1.5px 1px rgba(255,255,255,0.70)',
+          <div className="w-16 h-16 rounded-2xl mx-auto mb-4 animate-float-slow flex items-center justify-center" style={{
+            background: 'rgba(192,168,240,0.22)',
+            border: '1px solid rgba(192,168,240,0.38)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.70)',
           }}>
             <span style={{ fontSize: '1.75rem', opacity: 0.7 }}>◎</span>
           </div>

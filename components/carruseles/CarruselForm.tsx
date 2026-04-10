@@ -123,7 +123,7 @@ export default function CarruselForm({ marcas }: Props) {
         </div>
 
         {marcas.length === 0 ? (
-          <div className="px-4 py-3 rounded-2xl text-sm" style={{ background: 'rgba(253,216,122,0.25)', color: 'rgba(130,95,30,0.85)', border: '1px solid rgba(253,216,122,0.45)' }}>
+          <div className="px-4 py-3 rounded-xl text-sm" style={{ background: 'rgba(240,160,192,0.14)', color: 'var(--text-secondary)', border: '1px solid rgba(255,255,255,0.50)' }}>
             No hay marcas registradas. <a href="/marcas/nueva" className="font-medium underline">Crear una marca</a> primero.
           </div>
         ) : (
@@ -167,7 +167,7 @@ export default function CarruselForm({ marcas }: Props) {
         )}
 
         {errors.marca_id && (
-          <p className="text-xs" style={{ color: 'rgba(180,60,60,0.80)' }}>{errors.marca_id.message}</p>
+          <p className="text-xs" style={{ color: 'var(--accent-negative)' }}>{errors.marca_id.message}</p>
         )}
       </div>
     )
@@ -206,7 +206,7 @@ export default function CarruselForm({ marcas }: Props) {
         </div>
 
         {errors.enfoque && (
-          <p className="text-xs" style={{ color: 'rgba(180,60,60,0.80)' }}>{errors.enfoque.message}</p>
+          <p className="text-xs" style={{ color: 'var(--accent-negative)' }}>{errors.enfoque.message}</p>
         )}
       </div>
     )
@@ -236,7 +236,7 @@ export default function CarruselForm({ marcas }: Props) {
                   type="button"
                   onClick={() => append(SLIDE_INICIAL)}
                   className="text-xs font-medium"
-                  style={{ color: 'rgba(130,80,180,0.80)' }}
+                  style={{ color: 'var(--accent-blue)' }}
                 >
                   + Agregar slide
                 </button>
@@ -258,7 +258,7 @@ export default function CarruselForm({ marcas }: Props) {
         </div>
 
         {errors.slides?.root && (
-          <p className="text-xs" style={{ color: 'rgba(180,60,60,0.80)' }}>{errors.slides.root.message}</p>
+          <p className="text-xs" style={{ color: 'var(--accent-negative)' }}>{errors.slides.root.message}</p>
         )}
 
         {/* Imagen de referencia */}
@@ -279,14 +279,14 @@ export default function CarruselForm({ marcas }: Props) {
               />
               <div className="flex-1 min-w-0">
                 {uploadingImg ? (
-                  <p className="text-xs flex items-center gap-1.5" style={{ color: 'rgba(130,80,180,0.80)' }}>
-                    <span className="animate-spin inline-block w-3 h-3 border-2 border-t-transparent rounded-full" style={{ borderColor: 'rgba(130,80,180,0.70)', borderTopColor: 'transparent' }} />
+                  <p className="text-xs flex items-center gap-1.5" style={{ color: 'var(--accent-blue)' }}>
+                    <span className="animate-spin inline-block w-3 h-3 border-2 border-t-transparent rounded-full" style={{ borderColor: 'var(--accent-blue)', borderTopColor: 'transparent' }} />
                     Subiendo imagen…
                   </p>
                 ) : imagenUrl ? (
-                  <p className="text-xs font-medium" style={{ color: 'rgba(30,100,65,0.80)' }}>✓ Imagen cargada correctamente</p>
+                  <p className="text-xs font-medium" style={{ color: 'var(--accent-positive)' }}>✓ Imagen cargada correctamente</p>
                 ) : null}
-                {uploadError && <p className="text-xs mt-1" style={{ color: 'rgba(180,60,60,0.80)' }}>{uploadError}</p>}
+                {uploadError && <p className="text-xs mt-1" style={{ color: 'var(--accent-negative)' }}>{uploadError}</p>}
               </div>
               <button
                 type="button"
@@ -301,8 +301,8 @@ export default function CarruselForm({ marcas }: Props) {
             <label
               className="flex items-center justify-center gap-2 p-4 cursor-pointer rounded-2xl transition-all"
               style={{
-                border: `2px dashed ${uploadingImg ? 'rgba(184,168,212,0.60)' : 'rgba(180,210,240,0.50)'}`,
-                background: uploadingImg ? 'rgba(184,168,212,0.10)' : 'rgba(255,255,255,0.25)',
+                border: `2px dashed ${uploadingImg ? 'rgba(122,184,245,0.50)' : 'rgba(255,255,255,0.50)'}`,
+                background: uploadingImg ? 'rgba(122,184,245,0.08)' : 'rgba(255,255,255,0.20)',
               }}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" style={{ color: 'var(--text-muted)' }}>
@@ -371,17 +371,17 @@ function StepIndicator({ current }: { current: 1 | 2 | 3 }) {
               <span
                 className="w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center flex-shrink-0"
                 style={done
-                  ? { background: 'linear-gradient(135deg, var(--glow-core), var(--lavender))', color: 'rgba(75,45,110,0.95)' }
+                  ? { background: 'rgba(122,184,245,0.30)', color: 'var(--accent-blue)', border: '1px solid rgba(122,184,245,0.50)' }
                   : active
-                    ? { background: 'rgba(184,168,212,0.30)', color: 'rgba(90,55,120,0.90)', border: '2px solid rgba(184,168,212,0.70)' }
-                    : { background: 'rgba(255,255,255,0.40)', color: 'var(--text-muted)', border: '1px solid rgba(180,210,240,0.35)' }
+                    ? { background: 'rgba(122,184,245,0.18)', color: 'var(--accent-blue)', border: '2px solid rgba(122,184,245,0.55)' }
+                    : { background: 'rgba(255,255,255,0.25)', color: 'var(--text-muted)', border: '1px solid rgba(255,255,255,0.45)' }
                 }
               >
                 {done ? '✓' : num}
               </span>
               <span
                 className="text-xs font-medium"
-                style={{ color: active ? 'rgba(90,55,120,0.90)' : done ? 'var(--text-secondary)' : 'var(--text-muted)' }}
+                style={{ color: active ? 'var(--accent-blue)' : done ? 'var(--text-secondary)' : 'var(--text-muted)' }}
               >
                 {label}
               </span>

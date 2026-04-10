@@ -17,14 +17,15 @@ const ESTADOS: { value: EstadoCarrusel | 'todos'; label: string }[] = [
 
 const selectStyle: React.CSSProperties = {
   fontSize: '0.75rem',
-  padding: '0.4rem 0.75rem',
-  background: 'rgba(255,255,255,0.50)',
+  padding: '0.32rem 0.75rem',
+  background: 'rgba(255,255,255,0.25)',
   backdropFilter: 'blur(8px)',
-  border: '1px solid rgba(180,210,240,0.42)',
-  borderRadius: '12px',
+  border: '1px solid rgba(255,255,255,0.45)',
+  borderRadius: '10px',
   color: 'var(--text-secondary)',
   outline: 'none',
   cursor: 'pointer',
+  letterSpacing: '-0.01em',
 }
 
 export default function CarruselFilters({ marcas, total, initialQ = '', sort = 'reciente' }: Props) {

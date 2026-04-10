@@ -17,29 +17,32 @@ export default function LogoutButton() {
     <button
       onClick={handleLogout}
       title="Cerrar sesión"
+      className="w-full text-left"
       style={{
-        fontSize: '0.7rem',
+        fontSize: '12px',
         color: 'var(--text-muted)',
-        background: 'rgba(255,255,255,0.55)',
-        border: '1px solid #E0E0E0',
-        borderRadius: '9999px',
-        padding: '0.25rem 0.625rem',
+        background: 'rgba(255,255,255,0.25)',
+        border: '1px solid rgba(255,255,255,0.45)',
+        borderRadius: 8,
+        padding: '0.35rem 0.75rem',
         cursor: 'pointer',
-        transition: 'all 0.15s ease',
-        whiteSpace: 'nowrap',
+        transition: 'all 0.2s ease',
+        letterSpacing: '-0.01em',
       }}
       onMouseEnter={e => {
-        (e.target as HTMLButtonElement).style.background = 'rgba(253,240,235,0.80)'
-        ;(e.target as HTMLButtonElement).style.color = '#C05030'
-        ;(e.target as HTMLButtonElement).style.borderColor = 'rgba(217,96,64,0.30)'
+        const el = e.currentTarget
+        el.style.background = 'rgba(240,160,192,0.15)'
+        el.style.borderColor = 'rgba(240,160,192,0.40)'
+        el.style.color = '#F0A0C0'
       }}
       onMouseLeave={e => {
-        (e.target as HTMLButtonElement).style.background = 'rgba(255,255,255,0.55)'
-        ;(e.target as HTMLButtonElement).style.color = 'var(--text-muted)'
-        ;(e.target as HTMLButtonElement).style.borderColor = '#E0E0E0'
+        const el = e.currentTarget
+        el.style.background = 'rgba(255,255,255,0.25)'
+        el.style.borderColor = 'rgba(255,255,255,0.45)'
+        el.style.color = 'var(--text-muted)'
       }}
     >
-      Salir
+      Cerrar sesión
     </button>
   )
 }

@@ -6,17 +6,17 @@ interface NavLink { href: string; label: string; icon: string; onlyRol?: string 
 interface Props { rol: string }
 
 const LINKS: NavLink[] = [
-  { href: '/dashboard',        label: 'Inicio',          icon: '◈' },
-  { href: '/carruseles',       label: 'Carruseles',      icon: '▦' },
-  { href: '/marcas',           label: 'Marcas',          icon: '◎' },
-  { href: '/carruseles/nuevo', label: 'Nuevo carrusel',  icon: '+', onlyRol: 'editor' },
+  { href: '/dashboard',        label: 'Inicio',         icon: '⊞' },
+  { href: '/carruseles',       label: 'Carruseles',     icon: '▦' },
+  { href: '/marcas',           label: 'Marcas',         icon: '◎' },
+  { href: '/carruseles/nuevo', label: 'Nuevo carrusel', icon: '+', onlyRol: 'editor' },
 ]
 
 export default function NavLinks({ rol }: Props) {
   const pathname = usePathname()
 
   return (
-    <nav className="flex-1 p-3 space-y-0.5">
+    <nav className="flex-1 px-3 py-4 space-y-0.5">
       {LINKS.map((link) => {
         if (link.onlyRol && link.onlyRol !== rol) return null
 
@@ -33,7 +33,9 @@ export default function NavLinks({ rol }: Props) {
 
         return (
           <a key={link.href} href={link.href} className={className}>
-            <span className="text-base leading-none w-4 text-center flex-shrink-0" style={{ opacity: 0.7 }}>{link.icon}</span>
+            <span style={{ fontSize: '13px', opacity: isActive ? 1 : 0.6, width: 16, textAlign: 'center', flexShrink: 0 }}>
+              {link.icon}
+            </span>
             {link.label}
           </a>
         )

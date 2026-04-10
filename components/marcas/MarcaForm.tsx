@@ -58,19 +58,15 @@ function TagInput({ value, onChange, placeholder }: { value: string; onChange: (
   }
 
   return (
-    <div className="min-h-[42px] flex flex-wrap gap-1.5 items-center px-3 py-2 rounded-2xl" style={{
-      background: 'rgba(255,255,255,0.50)',
-      backdropFilter: 'blur(8px)',
-      border: '1px solid rgba(180,210,240,0.42)',
-    }}>
+    <div className="min-h-[42px] flex flex-wrap gap-1.5 items-center px-3 py-2 glass-l3">
       {tags.map(tag => (
         <span key={tag} className="flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full" style={{
-          background: 'rgba(184,168,212,0.30)',
-          color: 'rgba(90,55,120,0.85)',
-          border: '1px solid rgba(184,168,212,0.40)',
+          background: 'rgba(122,184,245,0.18)',
+          color: 'var(--accent-blue)',
+          border: '1px solid rgba(122,184,245,0.35)',
         }}>
           {tag}
-          <button type="button" onClick={() => onChange(tags.filter(t => t !== tag).join(', '))} className="leading-none" style={{ color: 'rgba(90,55,120,0.55)' }}>×</button>
+          <button type="button" onClick={() => onChange(tags.filter(t => t !== tag).join(', '))} className="leading-none" style={{ color: 'var(--text-muted)' }}>×</button>
         </span>
       ))}
       <input
@@ -100,17 +96,17 @@ function StepIndicator({ current }: { current: number }) {
               <span
                 className="w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center flex-shrink-0"
                 style={done
-                  ? { background: 'linear-gradient(135deg, var(--glow-core), var(--lavender))', color: 'rgba(75,45,110,0.95)' }
+                  ? { background: 'rgba(122,184,245,0.30)', color: 'var(--accent-blue)', border: '1px solid rgba(122,184,245,0.50)' }
                   : active
-                    ? { background: 'rgba(184,168,212,0.30)', color: 'rgba(90,55,120,0.90)', border: '2px solid rgba(184,168,212,0.70)' }
-                    : { background: 'rgba(255,255,255,0.40)', color: 'var(--text-muted)', border: '1px solid rgba(180,210,240,0.35)' }
+                    ? { background: 'rgba(122,184,245,0.18)', color: 'var(--accent-blue)', border: '2px solid rgba(122,184,245,0.55)' }
+                    : { background: 'rgba(255,255,255,0.25)', color: 'var(--text-muted)', border: '1px solid rgba(255,255,255,0.45)' }
                 }
               >
                 {done ? '✓' : num}
               </span>
               <span
                 className="text-xs font-medium hidden sm:block"
-                style={{ color: active ? 'rgba(90,55,120,0.90)' : done ? 'var(--text-secondary)' : 'var(--text-muted)' }}
+                style={{ color: active ? 'var(--accent-blue)' : done ? 'var(--text-secondary)' : 'var(--text-muted)' }}
               >
                 {label}
               </span>
@@ -283,7 +279,7 @@ export default function MarcaForm({ marca }: Props) {
           <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
             Tipografías <span style={{ color: 'rgba(200,80,80,0.75)' }}>*</span>
           </h3>
-          <button type="button" onClick={() => append({ nombre: '', peso: '', uso: '' })} className="text-xs font-medium" style={{ color: 'rgba(130,80,180,0.80)' }}>+ Agregar</button>
+          <button type="button" onClick={() => append({ nombre: '', peso: '', uso: '' })} className="text-xs font-medium" style={{ color: 'var(--accent-blue)' }}>+ Agregar</button>
         </div>
         <div className="space-y-3">
           {fields.map((field, index) => (
@@ -402,13 +398,13 @@ export default function MarcaForm({ marca }: Props) {
         <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>Si tienes un brandbook o guía de identidad, súbelo aquí. La IA lo tendrá como contexto de referencia.</p>
 
         {manualUrl ? (
-          <div className="flex items-center gap-3 px-4 py-3 rounded-2xl" style={{ background: 'rgba(168,216,196,0.20)', border: '1px solid rgba(168,216,196,0.40)' }}>
-            <svg className="w-8 h-8 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" style={{ color: 'rgba(30,100,65,0.70)' }}>
+          <div className="flex items-center gap-3 px-4 py-3 glass-l3" style={{ borderRadius: 14 }}>
+            <svg className="w-8 h-8 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24" style={{ color: 'var(--accent-positive)' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
             </svg>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate" style={{ color: 'rgba(30,100,65,0.85)' }}>{manualNombre ?? 'Manual subido'}</p>
-              <p className="text-xs" style={{ color: 'rgba(30,100,65,0.65)' }}>✓ Archivo cargado correctamente</p>
+              <p className="text-sm font-medium truncate" style={{ color: 'var(--accent-positive)' }}>{manualNombre ?? 'Manual subido'}</p>
+              <p className="text-xs" style={{ color: 'var(--accent-positive)', opacity: 0.75 }}>✓ Archivo cargado correctamente</p>
             </div>
             <button type="button" onClick={() => { setManualUrl(null); setManualNombre(null); setValue('manual_marca_url', null) }} className="text-xs flex-shrink-0" style={{ color: 'var(--text-muted)' }}>Quitar</button>
           </div>
@@ -416,14 +412,15 @@ export default function MarcaForm({ marca }: Props) {
           <label
             className="flex flex-col items-center justify-center gap-2 p-8 cursor-pointer rounded-2xl transition-all"
             style={{
-              border: `2px dashed ${uploadingManual ? 'rgba(184,168,212,0.60)' : 'rgba(180,210,240,0.50)'}`,
-              background: uploadingManual ? 'rgba(184,168,212,0.10)' : 'rgba(255,255,255,0.25)',
+              border: `2px dashed ${uploadingManual ? 'rgba(122,184,245,0.50)' : 'rgba(255,255,255,0.50)'}`,
+              background: uploadingManual ? 'rgba(122,184,245,0.08)' : 'rgba(255,255,255,0.20)',
+              borderRadius: 16,
             }}
           >
             {uploadingManual ? (
               <>
-                <span className="animate-spin w-6 h-6 border-2 border-t-transparent rounded-full" style={{ borderColor: 'rgba(130,80,180,0.70)', borderTopColor: 'transparent' }} />
-                <p className="text-sm font-medium" style={{ color: 'rgba(90,55,120,0.80)' }}>Subiendo archivo...</p>
+                <span className="animate-spin w-6 h-6 border-2 border-t-transparent rounded-full" style={{ borderColor: 'var(--accent-blue)', borderTopColor: 'transparent' }} />
+                <p className="text-sm font-medium" style={{ color: 'var(--accent-blue)' }}>Subiendo archivo...</p>
               </>
             ) : (
               <>
@@ -448,12 +445,12 @@ export default function MarcaForm({ marca }: Props) {
           {watch('sector')           && <p>Sector: <strong style={{ color: 'var(--text-primary)' }}>{watch('sector')}</strong></p>}
           {personalidad.length > 0   && <p>Personalidad: <strong style={{ color: 'var(--text-primary)' }}>{personalidad.join(', ')}</strong></p>}
           {estiloVisual.length > 0   && <p>Estilo visual: <strong style={{ color: 'var(--text-primary)' }}>{estiloVisual.join(', ')}</strong></p>}
-          {manualUrl                 && <p>Manual: <strong style={{ color: 'rgba(30,100,65,0.80)' }}>✓ adjunto</strong></p>}
+          {manualUrl                 && <p>Manual: <strong style={{ color: 'var(--accent-positive)' }}>✓ adjunto</strong></p>}
         </div>
       </div>
 
       {serverError && (
-        <p className="text-sm px-4 py-3 rounded-2xl" style={{ color: 'rgba(160,50,50,0.85)', background: 'rgba(255,200,200,0.30)', border: '1px solid rgba(255,180,180,0.40)' }}>{serverError}</p>
+        <p className="text-sm px-4 py-3" style={{ color: 'var(--accent-negative)', background: 'rgba(240,128,128,0.12)', border: '1px solid rgba(240,128,128,0.25)', borderRadius: 12 }}>{serverError}</p>
       )}
 
       <div className="flex gap-3 justify-between pt-2">
